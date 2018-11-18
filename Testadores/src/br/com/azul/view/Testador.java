@@ -6,11 +6,18 @@
 package br.com.azul.view;
 
 import br.com.azul.beans.EnumsBeans.TipoForm;
+import br.com.azul.beans.TestadorBeans;
+import br.com.azul.controller.ControllLog;
+import br.com.azul.controller.ControllTestador;
 import java.text.ParseException;
+import java.time.Clock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.sound.midi.ControllerEventListener;
 import javax.swing.JFormattedTextField;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
 /**
@@ -88,7 +95,7 @@ public class Testador extends javax.swing.JPanel {
             e.printStackTrace();
         }
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jtTestadores = new javax.swing.JTable();
         jpDetalhar = new javax.swing.JPanel();
         label2 = new java.awt.Label();
         txtCpfDetalhar = new javax.swing.JFormattedTextField();
@@ -106,6 +113,7 @@ public class Testador extends javax.swing.JPanel {
         label4 = new java.awt.Label();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
+        label5 = new java.awt.Label();
         btnPesquisar = new javax.swing.JButton();
         btnNovo = new javax.swing.JButton();
         btnSalvar = new javax.swing.JButton();
@@ -120,7 +128,7 @@ public class Testador extends javax.swing.JPanel {
 
         label1.setText("CPF:");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jtTestadores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -131,7 +139,7 @@ public class Testador extends javax.swing.JPanel {
                 "Codigo", "Nome", "Cpf", "Idade"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jtTestadores);
 
         javax.swing.GroupLayout jpPesquisarLayout = new javax.swing.GroupLayout(jpPesquisar);
         jpPesquisar.setLayout(jpPesquisarLayout);
@@ -165,21 +173,10 @@ public class Testador extends javax.swing.JPanel {
 
         label2.setText("Nome:");
 
-        txtCpfDetalhar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCpfDetalharActionPerformed(evt);
-            }
-        });
-
         label3.setText("CPF:");
 
         txtIdade.setColumns(2);
         txtIdade.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        txtIdade.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtIdadeActionPerformed(evt);
-            }
-        });
 
         label4.setText("Idade:");
 
@@ -191,10 +188,13 @@ public class Testador extends javax.swing.JPanel {
                 {null, null, null, null}
             },
             new String [] {
-                "Codigo", "Nome", "Cpf", "Idade"
+                "Codigo", "Nome", "Situação", "Observação"
             }
         ));
         jScrollPane2.setViewportView(jTable2);
+
+        label5.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        label5.setText("Produtos sendo testados:");
 
         javax.swing.GroupLayout jpDetalharLayout = new javax.swing.GroupLayout(jpDetalhar);
         jpDetalhar.setLayout(jpDetalharLayout);
@@ -202,56 +202,55 @@ public class Testador extends javax.swing.JPanel {
             jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpDetalharLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(txtIdade, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
-                        .addComponent(txtCpfDetalhar, javax.swing.GroupLayout.Alignment.LEADING)))
-                .addContainerGap(67, Short.MAX_VALUE))
-            .addGroup(jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jpDetalharLayout.createSequentialGroup()
-                    .addGap(20, 20, 20)
-                    .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(421, Short.MAX_VALUE)))
-            .addGroup(jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jpDetalharLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jpDetalharLayout.createSequentialGroup()
+                        .addGroup(jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txtIdade, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                                .addComponent(txtCpfDetalhar, javax.swing.GroupLayout.Alignment.LEADING))))
+                    .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jpDetalharLayout.setVerticalGroup(
             jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpDetalharLayout.createSequentialGroup()
-                .addGap(40, 40, 40)
                 .addGroup(jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(20, 20, 20)
-                .addComponent(txtCpfDetalhar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtCpfDetalhar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtIdade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(103, Short.MAX_VALUE))
-            .addGroup(jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jpDetalharLayout.createSequentialGroup()
-                    .addGap(80, 80, 80)
-                    .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(133, Short.MAX_VALUE)))
-            .addGroup(jpDetalharLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpDetalharLayout.createSequentialGroup()
-                    .addGap(0, 143, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(1, 1, 1)
+                .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         tabpane.addTab("Detalhar", jpDetalhar);
 
+        btnPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/azul/view/Imagens/novo_pesquisar.gif"))); // NOI18N
         btnPesquisar.setText("Pesquisar");
+        btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPesquisarActionPerformed(evt);
+            }
+        });
 
+        btnNovo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/azul/view/Imagens/novo_incluir.gif"))); // NOI18N
         btnNovo.setText("Novo");
         btnNovo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -259,8 +258,15 @@ public class Testador extends javax.swing.JPanel {
             }
         });
 
+        btnSalvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/azul/view/Imagens/novo_ok.gif"))); // NOI18N
         btnSalvar.setText("Salvar");
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarActionPerformed(evt);
+            }
+        });
 
+        btnVoltar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/azul/view/Imagens/novo_voltar.gif"))); // NOI18N
         btnVoltar.setText("Voltar");
         btnVoltar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -268,9 +274,21 @@ public class Testador extends javax.swing.JPanel {
             }
         });
 
+        btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/azul/view/Imagens/novo_editar.gif"))); // NOI18N
         btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
+        btnExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/azul/view/Imagens/novo_excluir.gif"))); // NOI18N
         btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -308,14 +326,6 @@ public class Testador extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtCpfDetalharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCpfDetalharActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCpfDetalharActionPerformed
-
-    private void txtIdadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdadeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtIdadeActionPerformed
-
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
         // TODO add your handling code here:
         ChangeTab(TipoForm.Cadastrar);
@@ -324,7 +334,7 @@ public class Testador extends javax.swing.JPanel {
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
         // TODO add your handling code here:
         switch (InterfaceControl) {
-            case Consultar:                
+            case Consultar:
                 //Testador.this.dispose();
                 //Testador.this.setEnabled(false);
                 this.setVisible(false);
@@ -339,9 +349,180 @@ public class Testador extends javax.swing.JPanel {
                 break;
         }
     }//GEN-LAST:event_btnVoltarActionPerformed
+
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        // TODO add your handling code here:
+        //Testa de campo inteiro é nulo
+        if (txtIdade.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Preencha o campo Idade.",
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        //Seta valores no objeto
+        TestadorBeans TB = new TestadorBeans();
+        TB.setNome(txtNome.getText().trim());
+        TB.setCpf(txtCpfDetalhar.getText().trim());
+        TB.setIdade(Integer.parseInt(txtIdade.getText().trim()));
+
+        //Armazena o retorno das operações
+        int Retorno = 0;
+        if (InterfaceControl == TipoForm.Cadastrar) {
+            //Instanticia a Controller e manda objeto como parametro
+            ControllTestador ConTes = new ControllTestador();
+            Retorno = ConTes.Cadastro(TB);
+        } else {
+            //Armazena o valor do ID da linha selecionada e converte para Int
+            String value = jtTestadores.getModel().getValueAt(jtTestadores.getSelectedRow(),
+                    0).toString();
+            //Converte para inteiro
+            TB.setId(Integer.parseInt(value));
+            //Instanticia a Controller e manda objeto como parametro
+            ControllTestador ConTes = new ControllTestador();
+            Retorno = ConTes.Atualiza(TB);
+        }
+
+        //Manda mensagem de acordo com o retorno
+        switch (Retorno) {
+            case 1:
+                //Mensagem de sucesso
+                JOptionPane.showMessageDialog(null, "Testador salvo com"
+                        + " sucesso!!", "Sucesso",
+                        JOptionPane.INFORMATION_MESSAGE);
+                //Limpa Campos
+                txtNome.setText("");
+                txtCpfDetalhar.setText("");
+                txtIdade.setText("");
+
+                //Informa no Log
+                if (InterfaceControl == TipoForm.Cadastrar) {
+                    ControllLog.AdicionarLog("Testador cadastrado Id:" + TB.getId());
+                } else {
+                    ControllLog.AdicionarLog("Testador alterado Id:" + TB.getId());
+                }
+
+                //Busca Testadores
+                btnPesquisarActionPerformed(evt);
+                ChangeTab(TipoForm.Consultar);
+
+                break;
+            case -2:
+                JOptionPane.showMessageDialog(null, "Preencha o campo nome.",
+                        "Erro", JOptionPane.ERROR_MESSAGE);
+                break;
+            case -3:
+                JOptionPane.showMessageDialog(null, "Preencha o campo CPF.",
+                        "Erro", JOptionPane.ERROR_MESSAGE);
+                break;
+            case -4:
+                JOptionPane.showMessageDialog(null, "Digite um CPF válido.",
+                        "Erro", JOptionPane.ERROR_MESSAGE);
+                break;
+            case -5:
+                JOptionPane.showMessageDialog(null,
+                        "Só é permitido cadastrar maiores de idade.",
+                        "Erro", JOptionPane.ERROR_MESSAGE);
+                break;
+        }
+    }//GEN-LAST:event_btnSalvarActionPerformed
+
+    private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
+        // TODO add your handling code here:
+
+        // cria variável do tipo DEfaultTableModel
+        DefaultTableModel dtmLogin = (DefaultTableModel) jtTestadores.getModel();
+
+        //limpa tabela
+        dtmLogin.getDataVector().removeAllElements();
+
+        //Realiza busca com o cpf digitado e armazena resultado no Array
+        String[] res = new ControllTestador().Busca(txtCpfPesquisar.getText());
+
+        //tabela não editavel
+        //jtTestadores.setEnabled(false);
+        //imprimir tabela
+        String codigo = "", nome = "", cpf = "", idade = "";
+        if (res.length != 0) {
+            for (int x = 0; x < res.length; x++) {
+                codigo = res[x];
+                nome = res[++x];
+                cpf = res[++x];
+                idade = res[++x];
+                //imprime
+                dtmLogin.addRow(new Object[]{codigo, nome, cpf, idade});
+            }
+        } else {
+            //imprime
+            dtmLogin.addRow(new Object[]{codigo, nome, cpf, idade});
+            JOptionPane.showMessageDialog(null,
+                    "Nenhum dado retornado na pesquisa", "Testador não encontrado",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_btnPesquisarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        //Armazena o valor do ID da linha selecionada e converte para Int
+        String value = jtTestadores.getModel().getValueAt(jtTestadores.getSelectedRow(),
+                0).toString();
+
+        //Converte para inteiro
+        int Id = Integer.parseInt(value);
+
+        //Objeto para receber a busca
+        TestadorBeans TB = new TestadorBeans();
+
+        //Realiza a busca das informações da linha selecionada e seta no objeto
+        TB = new ControllTestador().BuscaId(Id);
+
+        //Recebe a busca nos campos de texto
+        txtNome.setText(TB.Nome);
+        txtCpfDetalhar.setText(TB.Cpf);
+
+        //Converte de Int para String
+        txtIdade.setText(Integer.toString(TB.Idade));
+        ChangeTab(TipoForm.Alterar);
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        //Armazena o retorno da Query        
+        int retorno = 0;
+        //Armazena Id selecionado
+        String value = "";
+        if (jtTestadores.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null,
+                    "Selecione uma linha para realizar a exclusão!!",
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else {
+            //Solicia confirmação da exclusão
+            int confirma = JOptionPane.showConfirmDialog(null, "Confirme a exclusão.",
+                    "Escolha um", JOptionPane.YES_NO_OPTION);
+            if (confirma == JOptionPane.NO_OPTION) {
+                return;
+            }
+            //Armazena o valor do ID da linha selecionada e manda para a Controller
+            value = jtTestadores.getModel().getValueAt(jtTestadores.getSelectedRow(),
+                    0).toString();
+            retorno = new ControllTestador().Exclui(Integer.parseInt(value));
+        }
+        if (retorno == 1) {
+            //Mensagem de sucesso
+            JOptionPane.showMessageDialog(null, "Testador excluido com"
+                    + " sucesso!!", "Sucesso",
+                    JOptionPane.INFORMATION_MESSAGE);
+            ControllLog.AdicionarLog("Excluiu Testador Id:" + value);
+            //Limpa Campos                
+            txtCpfPesquisar.setText("");
+
+            //Busca testadores de novo
+            btnPesquisarActionPerformed(evt);
+            ChangeTab(TipoForm.Consultar);
+        } else {
+            JOptionPane.showMessageDialog(null, "Ocorreu um erro!!", "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnExcluirActionPerformed
     //Variaveis Customizadas
     //Manipula a interface
-    TipoForm InterfaceControl;    
+    TipoForm InterfaceControl;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnExcluir;
@@ -351,14 +532,15 @@ public class Testador extends javax.swing.JPanel {
     private javax.swing.JButton btnVoltar;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JPanel jpDetalhar;
     private javax.swing.JPanel jpPesquisar;
+    private javax.swing.JTable jtTestadores;
     private java.awt.Label label1;
     private java.awt.Label label2;
     private java.awt.Label label3;
     private java.awt.Label label4;
+    private java.awt.Label label5;
     private javax.swing.JTabbedPane tabpane;
     private javax.swing.JFormattedTextField txtCpfDetalhar;
     private javax.swing.JFormattedTextField txtCpfPesquisar;

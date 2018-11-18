@@ -6,7 +6,7 @@
 package br.com.azul.view;
 
 import br.com.azul.beans.BeansLogin;
-import br.com.azul.beans.SessionBeans;
+import br.com.azul.util.SessionUtil;
 import br.com.azul.controller.ControllLogin;
 import com.sun.org.apache.bcel.internal.Constants;
 import javax.swing.JOptionPane;
@@ -197,7 +197,7 @@ public class Login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Login Ok!");
             
             //Armazena o usuário logado na Session
-            SessionBeans.setUsuario(bl.getUsuario());
+            SessionUtil.setUsuario(bl.getUsuario());
             
             //Mostrara a tela 
             Menu.abrir();

@@ -6,6 +6,7 @@
 package br.com.azul.model;
 
 import br.com.azul.beans.BeansLogin;
+import br.com.azul.beans.TestadorBeans;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -73,86 +74,164 @@ public class Select {
         return ret;
     }
 
-//    public String[] SelectPesquisarUsuario(BeansPesquisarUsuario bpl) {
-//        //Variavel que recebe o conteudo da pesquisa
-//        String Usuario = bpl.getUsuario();
-//
-//        //variavel para retornar os resultados da pesquisa
-//        ArrayList<String> item = new ArrayList<>();
-//
-//        //cria seção interativa SQL
-//        PreparedStatement stmt = null;
-//        ResultSet rs = null;
-//
-//        //obtem a conexão
-//        Connection con = DB.getInstance().getConnection();
-//
-//        if (Usuario.equals("")) {
-//            //Se a pesquisa for vazia, traz todos os registros
-//            try {
-//                String sql = "SELECT ID, USUARIO, SENHA, ATIVO"
-//                        + " FROM TB_USUARIO";
-//                stmt = con.prepareStatement(sql);
-//                rs = stmt.executeQuery(sql);
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            //Pesquisa especifica
-//            String sql = "SELECT ID, USUARIO, SENHA, ATIVO"
-//                    + " FROM TB_USUARIO"
-//                    + " WHERE USUARIO LIKE ?";
-//            try {
-//                stmt = con.prepareStatement(sql);
-//                stmt.setString(1, "%" + Usuario + "%");
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//
-//            //Executa a Query
-//            try {
-//                rs = stmt.executeQuery();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
-//
-//        try {
-//            //Salva as propriedades do objeto ResultSet incluindo
-//            //columncount
-//            ResultSetMetaData rsmd = rs.getMetaData();
-//            int columnCount = rsmd.getColumnCount();
-//            while (rs.next()) {
-//                int i = 1;
-//                while (i <= columnCount) {
-//                    item.add(rs.getString(i++));
-//                }
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        //Converte o array list em array
-//        String[] itemArr = new String[item.size()];
-//        itemArr = item.toArray(itemArr);
-//
-//        //Encerra a pesquisa no banco e fecha a conexão
-//        try {
-//            rs.close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            stmt.close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        DB.getInstance().shutdown();
-//
-//        //Retorna o array da pesquisa
-//        return itemArr;
-//    }
+    public String[] SelectTestador(String cpf) {
+
+        //variavel para retornar os resultados da pesquisa
+        ArrayList<String> item = new ArrayList<>();
+
+        //cria seção interativa SQL
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        //obtem a conexão
+        Connection con = DB.getInstance().getConnection();
+
+        //Campo possui mascara por isso o teste é feito com pontos e traço
+        if (cpf.equals("   .   .   -  ")) {
+            //Se a pesquisa for vazia, traz todos os registros
+            try {
+                String sql = "SELECT ID_TESTADOR, NOME_TESTADOR, CPF, IDADE"
+                        + " FROM TESTADORES"
+                        + " WHERE ATIVO = TRUE";
+                stmt = con.prepareStatement(sql);
+                rs = stmt.executeQuery(sql);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            //Pesquisa especifica
+            String sql = "SELECT ID_TESTADOR, NOME_TESTADOR, CPF, IDADE"
+                    + " FROM TESTADORES"
+                    + " WHERE ATIVO = TRUE"
+                    + " AND CPF = ?";
+            try {
+                stmt = con.prepareStatement(sql);
+                stmt.setString(1, cpf);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            //Executa a Query
+            try {
+                rs = stmt.executeQuery();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        try {
+            //Salva as propriedades do objeto ResultSet incluindo
+            //columncount
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            while (rs.next()) {
+                int i = 1;
+                while (i <= columnCount) {
+                    item.add(rs.getString(i++));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        //Converte o array list em array
+        String[] itemArr = new String[item.size()];
+        itemArr = item.toArray(itemArr);
+
+        //Encerra a pesquisa no banco e fecha a conexão
+        try {
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        DB.getInstance().shutdown();
+
+        //Retorna o array da pesquisa
+        return itemArr;
+    }
+
+    public TestadorBeans SelectId(int Id) {
+        //Armazena Query utilizada
+        String sql = "SELECT * FROM TESTADORES"
+                + " WHERE ID_TESTADOR = ?";
+
+        //variavel para retornar os resultados da pesquisa
+        ArrayList<String> item = new ArrayList<>();
+
+        //cria seção interativa SQL
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        //obtem a conexão
+        Connection con = DB.getInstance().getConnection();
+
+        //Prepara
+        try {
+            stmt = con.prepareStatement(sql);
+            stmt.setInt(1, Id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        //Executa a Query
+        try {
+            rs = stmt.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            //Salva as propriedades do objeto ResultSet incluindo
+            //columncount
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            while (rs.next()) {
+                int i = 1;
+                while (i <= columnCount) {
+                    item.add(rs.getString(i++));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        TestadorBeans TB = new TestadorBeans();
+        try {
+            //Converte o array list em objeto do tipo TestadorBeans
+            String[] itemArr = new String[item.size()];
+            itemArr = item.toArray(itemArr);            
+            TB.setNome(item.get(1));
+            TB.setCpf(item.get(2));
+            TB.setIdade(Integer.parseInt(item.get(3)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //Encerra a pesquisa no banco e fecha a conexão
+        try {
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        DB.getInstance().shutdown();
+
+        //Retorna o array da pesquisa
+        return TB;
+    }
+
 }

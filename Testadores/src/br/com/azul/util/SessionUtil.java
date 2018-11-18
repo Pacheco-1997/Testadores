@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.azul.beans;
+package br.com.azul.util;
 
 /**
  *
  * @author Magno
  */
-public class SessionBeans {
+public class SessionUtil {
     //Sera armazenada o usuário logado no sistema, para guardar seu nome no Log
     public static String Usuario;
 
@@ -18,7 +18,7 @@ public class SessionBeans {
     }
 
     public static void setUsuario(String Usuario) {
-        SessionBeans.Usuario = Usuario;
+        SessionUtil.Usuario = Usuario;
     }
     
 }
