@@ -22,6 +22,8 @@ public class Menu extends javax.swing.JFrame {
      */
     public Menu() {
         initComponents();
+       // Menu m = null;
+       // m.setSize(600, 600);
     }
 
     /**
@@ -117,6 +119,7 @@ public class Menu extends javax.swing.JFrame {
         Produtos.setSize(frame.getSize());
         c.validate();
         resize(c, Produtos);
+        
     }//GEN-LAST:event_miCadProdutoActionPerformed
 
     private void resize(Container container, JPanel panel) {
@@ -125,6 +128,8 @@ public class Menu extends javax.swing.JFrame {
             public void componentResized(ComponentEvent e) {
                 Component comp = (Component) e.getSource();
                 panel.setSize(comp.getWidth(), comp.getHeight());
+                
+                
             }
         });
     }

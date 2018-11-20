@@ -59,7 +59,7 @@ public class Produto extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         jTextField4 = new javax.swing.JTextField();
         jToggleButton1 = new javax.swing.JToggleButton();
-        jToggleButton2 = new javax.swing.JToggleButton();
+        btnNovoProduto = new javax.swing.JToggleButton();
         jToggleButton3 = new javax.swing.JToggleButton();
         jToggleButton4 = new javax.swing.JToggleButton();
         jToggleButton5 = new javax.swing.JToggleButton();
@@ -88,7 +88,7 @@ public class Produto extends javax.swing.JPanel {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Nome do Produto", "Nome do Testador", "Situação", "Observação"
             }
         ));
         jScrollPane2.setViewportView(jTable1);
@@ -131,11 +131,11 @@ public class Produto extends javax.swing.JPanel {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(rdBtnRejeitado)
                                     .addComponent(rdBtnAprovado))))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 484, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 565, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(btnPesqProd)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -147,8 +147,8 @@ public class Produto extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButton4)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton5)))
-                        .addGap(91, 91, 91))))
+                                .addComponent(jButton5)))))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -194,7 +194,12 @@ public class Produto extends javax.swing.JPanel {
 
         jToggleButton1.setText("Pesquisar");
 
-        jToggleButton2.setText("Novo");
+        btnNovoProduto.setText("Novo");
+        btnNovoProduto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNovoProdutoActionPerformed(evt);
+            }
+        });
 
         jToggleButton3.setText("Salvar");
 
@@ -234,7 +239,7 @@ public class Produto extends javax.swing.JPanel {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jToggleButton1)
                                 .addGap(18, 18, 18)
-                                .addComponent(jToggleButton2)
+                                .addComponent(btnNovoProduto)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jToggleButton3)
                                 .addGap(18, 18, 18)
@@ -270,7 +275,7 @@ public class Produto extends javax.swing.JPanel {
                 .addGap(48, 48, 48)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jToggleButton1)
-                    .addComponent(jToggleButton2)
+                    .addComponent(btnNovoProduto)
                     .addComponent(jToggleButton3)
                     .addComponent(jToggleButton5)
                     .addComponent(jToggleButton6)
@@ -302,10 +307,15 @@ public class Produto extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_rdBtnRejeitadoActionPerformed
 
+    private void btnNovoProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoProdutoActionPerformed
+        
+    }//GEN-LAST:event_btnNovoProdutoActionPerformed
+
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup Gropo;
+    private javax.swing.JToggleButton btnNovoProduto;
     private javax.swing.JButton btnPesqProd;
     private javax.swing.ButtonGroup grupoDetalhar;
     private javax.swing.JButton jButton1;
@@ -332,7 +342,6 @@ public class Produto extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JToggleButton jToggleButton3;
     private javax.swing.JToggleButton jToggleButton4;
     private javax.swing.JToggleButton jToggleButton5;
