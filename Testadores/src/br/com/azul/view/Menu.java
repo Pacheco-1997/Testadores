@@ -108,8 +108,15 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_miCadTestadoresActionPerformed
 
     private void miCadProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miCadProdutoActionPerformed
-        // TODO add your handling code here:
+        Produto Produtos;
+        Produtos = new Produto();
         
+        c = getContentPane();
+        c.removeAll();
+        c.add(Produtos);
+        Produtos.setSize(frame.getSize());
+        c.validate();
+        resize(c, Produtos);
     }//GEN-LAST:event_miCadProdutoActionPerformed
 
     private void resize(Container container, JPanel panel) {
