@@ -51,4 +51,41 @@ public class Delete {
         //Retorna a Booleana
         return resultado;
     }
+    
+    public int DeleteProduto(int id) {
+        //Armazena Query utilizada
+        String sql = "UPDATE PRODUTO"
+                + " SET ATIVO  = FALSE"
+                + " WHERE ID_PRODUTO = ?";
+
+        //Obtem a conexão
+        Connection con = DB.getInstance().getConnection();
+
+        //resultado armazena o retorno da executeUpdate
+        int resultado = 0;
+
+        //Atribui falso para evitar ponteiro nulo
+        boolean ret = false;
+
+        //Cria PreparedStatement
+        PreparedStatement stm = null;
+
+        //Tentar Executar o comando
+        try {
+            //Atribui valores do objeto a query
+            stm = con.prepareStatement(sql);
+            stm.setInt(1, id);
+
+            //Executa o Comando            
+            return resultado = stm.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            //Fecha a Conexão
+            DB.getInstance().shutdown();
+        }
+        //Retorna a Booleana
+        return resultado;
+    }
 }

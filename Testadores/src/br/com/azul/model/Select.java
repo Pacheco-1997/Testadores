@@ -6,6 +6,7 @@
 package br.com.azul.model;
 
 import br.com.azul.beans.BeansLogin;
+import br.com.azul.beans.ProdutoBeans;
 import br.com.azul.beans.TestadorBeans;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -207,7 +208,7 @@ public class Select {
         try {
             //Converte o array list em objeto do tipo TestadorBeans
             String[] itemArr = new String[item.size()];
-            itemArr = item.toArray(itemArr);            
+            itemArr = item.toArray(itemArr);
             TB.setNome(item.get(1));
             TB.setCpf(item.get(2));
             TB.setIdade(Integer.parseInt(item.get(3)));
@@ -232,6 +233,172 @@ public class Select {
 
         //Retorna o array da pesquisa
         return TB;
+    }
+
+    public String[] SelectProduto(String nome) {
+
+        //variavel para retornar os resultados da pesquisa
+        ArrayList<String> item = new ArrayList<>();
+
+        //cria seção interativa SQL
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        //obtem a conexão
+        Connection con = DB.getInstance().getConnection();
+
+        //Campo possui mascara por isso o teste é feito com pontos e traço
+        if (nome.equals("")) {
+            //Se a pesquisa for vazia, traz todos os registros
+            try {
+                String sql = "SELECT ID_PRODUTO, NOME_PRODUTO, SITUACAO, OBS"
+                        + " FROM PRODUTO"
+                        + " WHERE ATIVO = TRUE";
+                stmt = con.prepareStatement(sql);
+                rs = stmt.executeQuery(sql);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            //Pesquisa especifica
+            String sql = "SELECT ID_PRODUTO, NOME_PRODUTO, SITUACAO, OBS"
+                    + " FROM PRODUTO"
+                    + " WHERE ATIVO = TRUE"
+                    + " AND NOME_PRODUTO = ?";
+            try {
+                stmt = con.prepareStatement(sql);
+                stmt.setString(1, nome);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            //Executa a Query
+            try {
+                rs = stmt.executeQuery();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        try {
+            //Salva as propriedades do objeto ResultSet incluindo
+            //columncount
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            while (rs.next()) {
+                int i = 1;
+                while (i <= columnCount) {
+                    item.add(rs.getString(i++));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        //Converte o array list em array
+        String[] itemArr = new String[item.size()];
+        itemArr = item.toArray(itemArr);
+
+        //Encerra a pesquisa no banco e fecha a conexão
+        try {
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        DB.getInstance().shutdown();
+
+        //Retorna o array da pesquisa
+        return itemArr;
+    }
+
+    public ProdutoBeans SelectIdProduto(int Id) {
+        //Armazena Query utilizada
+        String sql = "SELECT * FROM PRODUTO"
+                + " WHERE ID_PRODUTO = ?";
+
+        //variavel para retornar os resultados da pesquisa
+        ArrayList<String> item = new ArrayList<>();
+
+        //cria seção interativa SQL
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        //obtem a conexão
+        Connection con = DB.getInstance().getConnection();
+
+        //Prepara
+        try {
+            stmt = con.prepareStatement(sql);
+            stmt.setInt(1, Id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        //Executa a Query
+        try {
+            rs = stmt.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            //Salva as propriedades do objeto ResultSet incluindo
+            //columncount
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            while (rs.next()) {
+                int i = 1;
+                while (i <= columnCount) {
+                    item.add(rs.getString(i++));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        ProdutoBeans PB = new ProdutoBeans();
+        try {
+            //Converte o array list em objeto do tipo ProdutoBeans
+            String[] itemArr = new String[item.size()];
+            itemArr = item.toArray(itemArr);
+            PB.setNome(item.get(1));
+            //gambiarra marota para converter direto de String
+            if (item.get(2).equals("1")) {
+                PB.setSituacao(true);
+            } else {
+                PB.setSituacao(false);
+            }
+                        
+            PB.setObservacao(item.get(3));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //Encerra a pesquisa no banco e fecha a conexão
+        try {
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        DB.getInstance().shutdown();
+
+        //Retorna o array da pesquisa
+        return PB;
     }
 
 }
