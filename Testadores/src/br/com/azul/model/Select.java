@@ -29,6 +29,7 @@ public class Select {
      * @param bl tipo BeaansLogin
      * @return
      */
+    // <editor-fold defaultstate="collapsed" desc="Login">
     public static boolean selectLogin(BeansLogin bl) {
 
         //Obtem a conexão
@@ -74,7 +75,9 @@ public class Select {
         //Retorna Booleana
         return ret;
     }
-
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="Testador">
     public String[] SelectTestador(String cpf) {
 
         //variavel para retornar os resultados da pesquisa
@@ -234,7 +237,9 @@ public class Select {
         //Retorna o array da pesquisa
         return TB;
     }
-
+// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="Produto">
     public String[] SelectProduto(String nome) {
 
         //variavel para retornar os resultados da pesquisa
@@ -400,5 +405,5 @@ public class Select {
         //Retorna o array da pesquisa
         return PB;
     }
-
+    // </editor-fold>
 }
