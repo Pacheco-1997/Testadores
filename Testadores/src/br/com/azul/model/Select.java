@@ -6,14 +6,18 @@
 package br.com.azul.model;
 
 import br.com.azul.beans.BeansLogin;
+import br.com.azul.beans.EventoBeans;
 import br.com.azul.beans.ProdutoBeans;
 import br.com.azul.beans.TestadorBeans;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -76,7 +80,7 @@ public class Select {
         return ret;
     }
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Testador">
     public String[] SelectTestador(String cpf) {
 
@@ -238,7 +242,7 @@ public class Select {
         return TB;
     }
 // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Produto">
     public String[] SelectProduto(String nome) {
 
@@ -381,8 +385,174 @@ public class Select {
             } else {
                 PB.setSituacao(false);
             }
-                        
+
             PB.setObservacao(item.get(3));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //Encerra a pesquisa no banco e fecha a conexão
+        try {
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        DB.getInstance().shutdown();
+
+        //Retorna o array da pesquisa
+        return PB;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Evento">
+    public String[] SelectEvento(String nome) {
+
+        //variavel para retornar os resultados da pesquisa
+        ArrayList<String> item = new ArrayList<>();
+
+        //cria seção interativa SQL
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        //obtem a conexão
+        Connection con = DB.getInstance().getConnection();
+
+        //Campo possui mascara por isso o teste é feito com pontos e traço
+        if (nome.equals("")) {
+            //Se a pesquisa for vazia, traz todos os registros
+            try {
+
+                String sql = "SELECT ID_EVENTO, TEMPO_EVENTO, NOME_EVENTO"
+                        + " FROM EVENTOS"
+                        + " WHERE ATIVO = TRUE";
+                stmt = con.prepareStatement(sql);
+                rs = stmt.executeQuery(sql);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            //Pesquisa especifica
+            String sql = "SELECT ID_EVENTO, TEMPO_EVENTO, NOME_EVENTO"
+                    + " FROM EVENTOS"
+                    + " WHERE ATIVO = TRUE"
+                    + " AND NOME_EVENTO = ?";
+            try {
+                stmt = con.prepareStatement(sql);
+                stmt.setString(1, nome);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            //Executa a Query
+            try {
+                rs = stmt.executeQuery();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        try {
+            //Salva as propriedades do objeto ResultSet incluindo
+            //columncount
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            while (rs.next()) {
+                int i = 1;
+                while (i <= columnCount) {
+                    item.add(rs.getString(i++));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        //Converte o array list em array
+        String[] itemArr = new String[item.size()];
+        itemArr = item.toArray(itemArr);
+
+        //Encerra a pesquisa no banco e fecha a conexão
+        try {
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        DB.getInstance().shutdown();
+
+        //Retorna o array da pesquisa
+        return itemArr;
+    }
+
+    public EventoBeans SelectIdEvento(int Id) {
+        //Armazena Query utilizada
+        String sql = "SELECT * FROM EVENTOS"
+                + " WHERE ID_PRODUTO = ?";
+
+        //variavel para retornar os resultados da pesquisa
+        ArrayList<String> item = new ArrayList<>();
+
+        //cria seção interativa SQL
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        //obtem a conexão
+        Connection con = DB.getInstance().getConnection();
+
+        //Prepara
+        try {
+            stmt = con.prepareStatement(sql);
+            stmt.setInt(1, Id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        //Executa a Query
+        try {
+            rs = stmt.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            //Salva as propriedades do objeto ResultSet incluindo
+            //columncount
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            while (rs.next()) {
+                int i = 1;
+                while (i <= columnCount) {
+                    item.add(rs.getString(i++));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        EventoBeans PB = new EventoBeans();
+        try {
+            //Converte o array list em objeto do tipo EventoBeans
+            String[] itemArr = new String[item.size()];
+            itemArr = item.toArray(itemArr);
+            PB.setNome(item.get(1));
+            //Converte retorno para Date
+            DateFormat formatter = new SimpleDateFormat("MM/dd/yy");
+            Date date = (Date) formatter.parse(item.get(2));
+            //seta no objeto
+            PB.setDataEvento(date);
         } catch (Exception e) {
             e.printStackTrace();
         }

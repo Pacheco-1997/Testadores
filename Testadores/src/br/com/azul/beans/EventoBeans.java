@@ -5,6 +5,7 @@
  */
 package br.com.azul.beans;
 
+import java.sql.Date;
 import java.util.Calendar;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Calendar;
 public class EventoBeans {
     public int Id;
     public String Nome;
-    public Calendar DataEvento; //Tipo Date foi depreciado
+    public Date DataEvento; //Tipo Date foi depreciado
 
     public int getId() {
         return Id;
@@ -32,11 +33,11 @@ public class EventoBeans {
         this.Nome = Nome;
     }
 
-    public Calendar getDataEvento() {
+    public Date getDataEvento() {
         return DataEvento;
     }
 
-    public void setDataEvento(Calendar DataEvento) {
+    public void setDataEvento(Date DataEvento) {
         this.DataEvento = DataEvento;
     }
 }
